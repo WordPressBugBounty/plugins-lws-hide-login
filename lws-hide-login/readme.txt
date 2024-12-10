@@ -2,8 +2,8 @@
 Contributors: aurelienlws
 Tags: LWS, Security
 Requires at least: 5.0
-Tested up to: 6.6
-Stable tag: 2.2.2
+Tested up to: 6.7
+Stable tag: 2.2.3
 Requires PHP: 7.0
 Author : LWS
 Author URI: https://www.lws.fr/
@@ -123,6 +123,10 @@ There are 3 different ways to install LWS Hide Login (as with any other wordpres
 3. Dashboard Redirection & New Login Address
 
 == Changelog ==
+
+= 2.2.3 =
+* Now check the given values for the new URLs to make sure they are not the same
+* Now cannot set the new URL to one of the login URL from WordPress (wp-admin, wp-login.php, ...)
 
 = 2.2 =
 * Fixed a problem when hiding pages/articles behind a password, where the form would break

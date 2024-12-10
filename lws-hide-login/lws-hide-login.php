@@ -4,11 +4,11 @@
  * Plugin Name:       LWS Hide Login
  * Plugin URI:        https://www.lws.fr/
  * Description:       Secure your access to the admin page with this plugin !
- * Version:           2.2.2
+ * Version:           2.2.3
  * Requires PHP:      7.0
  * Author:            LWS
  * Author URI:        https://www.lws.fr
- * Tested up to:      6.6
+ * Tested up to:      6.7
  * Domain Path:       /languages
  *
  * @since             1.0
@@ -42,7 +42,7 @@ function lws_hl_traduction()
 register_activation_hook(__FILE__, 'lws_hl_on_activation');
 function lws_hl_on_activation()
 {
-    set_transient('lwshl_remind_me', 950400);        
+    set_transient('lwshl_remind_me', 950400);
 }
 
 register_uninstall_hook(__FILE__, 'lws_hl_on_uninstall');
@@ -90,7 +90,7 @@ function lws_hl_login_url($login_url, $redirect, $force_reauth)
         if (mb_strpos($_SERVER['REQUEST_URI'], "wp-admin/install.php")) {
             return admin_url();
         }
-        
+
         if (is_404()) {
             nocache_headers();
             return '#';
@@ -110,7 +110,7 @@ function lws_hl_login_url($login_url, $redirect, $force_reauth)
             $login_url = admin_url();
         }
     }
-    
+
 
     return $login_url;
 }
@@ -140,8 +140,8 @@ function lwshl_review_ad_plugin(){
     ?>
     <script>
         function lwshl_remind_me(){
-            var data = {                
-                _ajax_nonce: '<?php echo esc_attr(wp_create_nonce('reminder_for_hl')); ?>',        
+            var data = {
+                _ajax_nonce: '<?php echo esc_attr(wp_create_nonce('reminder_for_hl')); ?>',
                 action: "lws_hl_reminder_ajax",
                 data: true,
             };
@@ -149,14 +149,14 @@ function lwshl_review_ad_plugin(){
                 jQuery("#lwshl_review_notice").addClass("animationFadeOut");
                 setTimeout(() => {
                     jQuery("#lwshl_review_notice").addClass("lws_hidden");
-                }, 800);    
+                }, 800);
             });
 
         }
 
         function lwshl_do_not_bother_me(){
-            var data = {                
-                _ajax_nonce: '<?php echo esc_attr(wp_create_nonce('donotask_for_hl')); ?>',        
+            var data = {
+                _ajax_nonce: '<?php echo esc_attr(wp_create_nonce('donotask_for_hl')); ?>',
                 action: "lws_hl_donotask_ajax",
                 data: true,
             };
@@ -164,8 +164,8 @@ function lwshl_review_ad_plugin(){
                 jQuery("#lwshl_review_notice").addClass("animationFadeOut");
                 setTimeout(() => {
                     jQuery("#lwshl_review_notice").addClass("lws_hidden");
-                }, 800);    
-            });            
+                }, 800);
+            });
         }
     </script>
 
@@ -189,7 +189,7 @@ add_action("wp_ajax_lws_hl_reminder_ajax", "lws_hl_remind_me_later");
 function lws_hl_remind_me_later(){
     check_ajax_referer('reminder_for_hl', '_ajax_nonce');
     if (isset($_POST['data'])){
-        set_transient('lwshl_remind_me', 950400);        
+        set_transient('lwshl_remind_me', 950400);
     }
 }
 
@@ -198,7 +198,7 @@ add_action("wp_ajax_lws_hl_donotask_ajax", "lws_hl_do_not_ask");
 function lws_hl_do_not_ask(){
     check_ajax_referer('donotask_for_hl', '_ajax_nonce');
     if (isset($_POST['data'])){
-        update_option('lwshl_do_not_ask_again', true);        
+        update_option('lwshl_do_not_ask_again', true);
     }
 }
 
@@ -221,16 +221,34 @@ function lws_hl_create_page()
     if (isset($_POST['lws_hl_form_change_redirect']) && wp_verify_nonce( $_POST['lws_hide_login_form_config_param_nonce_hide_admin'], 'lws_hide_login_nonce_form_config_param' )) {
         empty($change_login = sanitize_text_field($_POST['input_change_login'])) ? delete_option('lws_aff_new_login') : update_option('lws_aff_new_login', $change_login);
         $form_updated = empty($change_login) ? __('The login page has been reverted to default.', 'lws-hide-login') : __('The login page has been successfully updated.', 'lws-hide-login');
+
+        $change_login = sanitize_text_field($_POST['input_change_login']);
+        if (empty($change_login)) {
+            delete_option('lws_aff_new_login');
+            $form_updated =  __('The login page has been reverted to default.', 'lws-hide-login');
+        } else {
+            $redirection = get_option('lws_aff_new_redirection', '');
+            if (in_array($change_login, [$redirection, 'wp-admin', 'wp-login', 'wp-login.php', 'login'])) {
+                $form_updated = __('Cannot set login to reserved URLs or the redirection page.', 'lws-hide-login');
+            } else {
+                update_option('lws_aff_new_login', $change_login);
+                $form_updated = __('The login page has been successfully updated.', 'lws-hide-login');
+            }
+        }
     }
 
     if (isset($_POST['lws_hl_form_change_404']) && wp_verify_nonce( $_POST['lws_hide_login_form_config_param_nonce_hide_admin'], 'lws_hide_login_nonce_form_config_param' )) {
         $change_redirection = sanitize_text_field($_POST['input_change_redirection']);
-        if (empty($change_redirection)) {
-            update_option('lws_aff_new_redirection', ' ');
+
+        $login = get_option('lws_aff_new_login', '');
+
+        if (in_array($change_redirection, [$login, 'wp-admin', 'wp-login', 'wp-login.php', 'login'])) {
+            $form_updated = __('Cannot set redirection to reserved URLs or the new login page.', 'lws-hide-login');
+
         } else {
             update_option('lws_aff_new_redirection', $change_redirection);
+            $form_updated = __('The redirection has been successfully updated.', 'lws-hide-login');
         }
-        $form_updated = __('The redirection has been successfully updated.', 'lws-hide-login');
     }
 
     include __DIR__ . '/view/lws_hl_tabs.php';
@@ -251,12 +269,34 @@ function lws_hl_create_page_network()
     if (isset($_POST['lws_hl_form_change_redirect']) && wp_verify_nonce( $_POST['lws_hide_login_form_config_param_nonce_hide_admin'], 'lws_hide_login_nonce_form_config_param' )) {
         empty($change_login = sanitize_text_field($_POST['input_change_login'])) ? delete_site_option('lws_aff_new_login') : update_site_option('lws_aff_new_login', $change_login);
         $form_updated = empty($change_login) ? __('The login page has been reverted to default.', 'lws-hide-login') : __('The login page has been successfully updated.', 'lws-hide-login');
+
+        $change_login = sanitize_text_field($_POST['input_change_login']);
+        if (empty($change_login)) {
+            delete_site_option('lws_aff_new_login');
+            $form_updated =  __('The login page has been reverted to default.', 'lws-hide-login');
+        } else {
+            $redirection = get_site_option('lws_aff_new_redirection', '');
+            if (in_array($change_login, [$redirection, 'wp-admin', 'wp-login', 'wp-login.php', 'login'])) {
+                $form_updated = __('Cannot set login to reserved URLs or the redirection page.', 'lws-hide-login');
+            } else {
+                update_site_option('lws_aff_new_login', $change_login);
+                $form_updated = __('The login page has been successfully updated.', 'lws-hide-login');
+            }
+        }
     }
 
     if (isset($_POST['lws_hl_form_change_404']) && wp_verify_nonce( $_POST['lws_hide_login_form_config_param_nonce_hide_admin'], 'lws_hide_login_nonce_form_config_param' )) {
         $change_redirection = sanitize_text_field($_POST['input_change_redirection']);
-        update_site_option('lws_aff_new_redirection', $change_redirection);
-        $form_updated = __('The redirection has been successfully updated.', 'lws-hide-login');
+
+        $login = get_site_option('lws_aff_new_login', '');
+
+        if (in_array($change_redirection, [$login, 'wp-admin', 'wp-login', 'wp-login.php', 'login'])) {
+            $form_updated = __('Cannot set redirection to reserved URLs or the new login page.', 'lws-hide-login');
+
+        } else {
+            update_site_option('lws_aff_new_redirection', $change_redirection);
+            $form_updated = __('The redirection has been successfully updated.', 'lws-hide-login');
+        }
     }
 
     include __DIR__ . '/view/lws_hl_tabs.php';
@@ -376,7 +416,7 @@ function lws_hl_redirect_page()
     global $pagenow, $lws_hl_is_login, $lws_hl_is_login_network;
     $path = basename($_SERVER['REQUEST_URI']);
 
-    
+
     if (get_site_option('lws_aff_new_login') || get_option('lws_aff_new_login')) {
         if (is_multisite() && is_plugin_active_for_network(plugin_basename(__FILE__))) {
             if (! (isset($_GET['action']) && isset($_POST['post_password']) && $_GET['action'] == 'postpass')) {
@@ -392,17 +432,17 @@ function lws_hl_redirect_page()
                     global $user_login, $error;
                     $redirect_admin = admin_url();
                     $redirect_url = isset($_REQUEST['redirect_to']) ? $_REQUEST['redirect_to'] : "";
-                
+
                     if (is_user_logged_in() && !isset($_REQUEST['action'])) {
                         nocache_headers();
                         wp_safe_redirect(apply_filters('lws_hl_redirect_if_connected_login', $redirect_admin, $redirect_url));
                         exit();
                     }
-                
+
                     require_once(ABSPATH . 'wp-login.php');
                     exit;
                 }
-                
+
                 if (is_admin() && ! is_user_logged_in() && ! defined('WP_CLI') && !wp_doing_ajax() && ! defined('DOING_CRON') && $pagenow !== 'admin-post.php') {
                     nocache_headers();
                     if (get_site_option('lws_aff_new_redirection')) {
@@ -427,17 +467,17 @@ function lws_hl_redirect_page()
                     global $user_login, $error;
                     $redirect_admin = admin_url();
                     $redirect_url = isset($_REQUEST['redirect_to']) ? $_REQUEST['redirect_to'] : "";
-                
+
                     if (is_user_logged_in() && !isset($_REQUEST['action'])) {
                         nocache_headers();
                         wp_safe_redirect(apply_filters('lws_hl_redirect_if_connected_login', $redirect_admin, $redirect_url));
                         exit();
                     }
-                
+
                     require_once(ABSPATH . 'wp-login.php');
                     exit;
                 }
-                
+
                 if (is_admin() && ! is_user_logged_in() && ! defined('WP_CLI') && !wp_doing_ajax() && ! defined('DOING_CRON') && $pagenow !== 'admin-post.php') {
                     nocache_headers();
                     if (get_option('lws_aff_new_redirection')) {
@@ -475,7 +515,7 @@ function lws_hl_filter_login($url)
     if ( strpos( $url, 'wp-login.php?action=postpass' ) !== false ) {
 		return $url;
 	}
-    
+
     if (strpos($url, 'wp-login.php') && strpos( wp_get_referer(), 'wp-login.php' ) === false) {
         $args = explode('?', $url);
         if (get_site_option('lws_aff_new_login') || get_option('lws_aff_new_login')) {

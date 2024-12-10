@@ -318,3 +318,9 @@ msgstr "Basé sur la technologie Varnish cache et Nginx, LWScache permet d’acc
 #: lws_hl_ourplugins.php:
 msgid "It provide a way to purge all your cache but will only work on server using this system."
 msgstr "Cela vous permet de purger tout votre cache mais cela ne fonctionne que si votre serveur utilise aussi ce système de cache."
+
+msgid "Cannot set login to reserved URLs or the redirection page."
+msgstr "Impossible de mettre à jour l'adresse de connexion vers une URL réservée ou la page de redirection"
+
+msgid "Cannot set redirection to reserved URLs or the new login page."
+msgstr "Impossible de mettre à jour l'adresse de redirection vers une URL réservée ou la page de connexion"
