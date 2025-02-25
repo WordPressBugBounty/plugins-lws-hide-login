@@ -4,7 +4,7 @@
  * Plugin Name:       LWS Hide Login
  * Plugin URI:        https://www.lws.fr/
  * Description:       Secure your access to the admin page with this plugin !
- * Version:           2.2.3
+ * Version:           2.2.4
  * Requires PHP:      7.0
  * Author:            LWS
  * Author URI:        https://www.lws.fr
@@ -128,10 +128,10 @@ function lws_hl_scripts()
         wp_enqueue_style('lws_hl-Poppins', 'https://fonts.googleapis.com/css?family=Poppins');
     }
     else{
-        wp_enqueue_style('lws_hl_css_out', LWS_HL_URL . "css/lws_hl_style_out.css");
-        if (!get_transient('lwshl_remind_me') && !get_option('lwshl_do_not_ask_again')){
-            add_action( 'admin_notices', 'lwshl_review_ad_plugin' );
-        }
+        // wp_enqueue_style('lws_hl_css_out', LWS_HL_URL . "css/lws_hl_style_out.css");
+        // if (!get_transient('lwshl_remind_me') && !get_option('lwshl_do_not_ask_again')){
+        //     add_action( 'admin_notices', 'lwshl_review_ad_plugin' );
+        // }
     }
 }
 

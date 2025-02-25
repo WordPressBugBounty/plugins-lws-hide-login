@@ -10,14 +10,14 @@ $plugins = array(
         'lws-hide-login' => array('LWS Hide Login', __('This plugin <strong>hide your administration page</strong> (wp-admin) and lets you <strong>change your login page</strong> (wp-login). It offers better security as hackers will have more trouble finding the page.', 'lws-hide-login'), true),
         'lws-optimize' => array('LWS Optimize', __('This plugin lets you boost your website\'s <strong>loading times</strong> thanks to our tools: caching, media optimisation, files minification and concatenation...', 'lws-hide-login'), true),
         'lws-cleaner' => array('LWS Cleaner', __('This plugin lets you <strong>clean your WordPress website</strong> in a few clics to gain speed: posts, comments, terms, users, settings, plugins, medias, files.', 'lws-hide-login'), true),
-        'lws-sms' => array('LWS SMS', __('This plugin, designed specifically for WooCommerce, lets you <strong>send SMS automatically to your customers</strong>. You will need an account at LWS and enough credits to send SMS. Create personnalized templates, manage your SMS and sender IDs and more!', 'lws-hide-login'), false),
+        // 'lws-sms' => array('LWS SMS', __('This plugin, designed specifically for WooCommerce, lets you <strong>send SMS automatically to your customers</strong>. You will need an account at LWS and enough credits to send SMS. Create personnalized templates, manage your SMS and sender IDs and more!', 'lws-hide-login'), false),
         'lws-affiliation' => array('LWS Affiliation', __('With this plugin, you can add banners and widgets on your website and use those with your <strong>affiliate account LWS</strong>. Earn money and follow the evolution of your gains on your website.', 'lws-hide-login'), false),
         'lwscache' => array('LWSCache', __('Based on the Varnich cache technology and NGINX, LWSCache let you <strong>speed up the loading of your pages</strong>. This plugin helps you automatically manage your LWSCache when editing pages, posts... and purging all your cache. Works only if your server use this cache.', 'lws-hide-login'), false),
         'lws-tools' => array('LWS Tools', __('This plugin provides you with several tools and shortcuts to manage, secure and optimise your WordPress website. Updating plugins and themes, accessing informations about your server, managing your website parameters, etc... Personnalize every aspect of your website!', 'lws-hide-login'), false)
 );
 
 //Adapt the array to change which plugins are featured as ads
-$plugins_showcased = array('lwscache', 'lws-cleaner', 'lws-tools');
+$plugins_showcased = array('lws-optimize', 'lws-cleaner', 'lws-tools');
 
 $plugins_activated = array();
 $all_plugins = get_plugins();
@@ -124,7 +124,7 @@ foreach ($plugins as $slug => $plugin) {
                         <?php esc_html_e('Thank you for using LWS Hide Login!', 'lws-hide-login');?>
                     </div>
                     <div class="lws_hl_block_ad_review_stars">
-                        <img src="<?php echo esc_url(plugins_url('images/notation.svg', __DIR__))?>" 
+                        <img src="<?php echo esc_url(plugins_url('images/notation.svg', __DIR__))?>"
                         height="25px" width="159px">
                     </div>
                     <div class="lws_hl_block_ad_review_description">
@@ -170,12 +170,12 @@ foreach ($plugins as $slug => $plugin) {
                 <div style="display: flex; justify-content: space-between; margin-bottom:15px">
                     <span style="margin-top:5px">
                         <img style="vertical-align:sub; margin-right:5px"
-                            src="<?php echo esc_url(plugin_dir_url(__DIR__) . 'images/lws_cache_menu.svg')?>"
-                            alt="LWS Cache" width="25px" height="23px">
-                        <span class="lws_hl_block_ad_text"><?php echo esc_html('LWSCache');?></span>
+                            src="<?php echo esc_url(plugin_dir_url(__DIR__) . 'images/lws_optimize_menu.svg')?>"
+                            alt="LWS Optimize" width="25px" height="23px">
+                        <span class="lws_hl_block_ad_text"><?php echo esc_html('LWS Optimize');?></span>
                     </span>
-                    <button class="lws_hl_button_ad_block" onclick="install_plugin(this)" value="lwscache"
-                        id="lwscache">
+                    <button class="lws_hl_button_ad_block" onclick="install_plugin(this)" value="lws-optimize"
+                        id="lws-optimize">
                         <span>
                             <img style="vertical-align:sub; margin-right:5px"
                                 src="<?php echo esc_url(plugin_dir_url(__DIR__) . 'images/securise.svg')?>"
@@ -196,7 +196,7 @@ foreach ($plugins as $slug => $plugin) {
                     </button>
                 </div>
                 <span class="lws_hl_text_ad">
-                    <?php esc_html_e('Automatically manage your LWSCache when editing pages, posts, ... and purge it.', 'lws-hide-login'); ?>
+                    <?php esc_html_e('Boost your website using LWS Optimize, with file-based cache, file minification, lazy-loading and more', 'lws-hide-login'); ?>
                 </span>
             </div>
 
@@ -392,7 +392,7 @@ foreach ($plugins as $slug => $plugin) {
                     var data = {
                         action: "lwshidelogin_activatePlugin",
                         ajax_slug: slug,
-                        _ajax_nonce: '<?php echo esc_attr(wp_create_nonce('activate_plugin_nonce_pluginpage')); ?>',        
+                        _ajax_nonce: '<?php echo esc_attr(wp_create_nonce('activate_plugin_nonce_pluginpage')); ?>',
                     };
                     jQuery.post(ajaxurl, data, function(response) {
                         jQuery('#' + bouton_id).children()[1].classList.add('hidden');

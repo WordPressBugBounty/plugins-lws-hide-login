@@ -3,7 +3,7 @@ Contributors: aurelienlws
 Tags: LWS, Security
 Requires at least: 5.0
 Tested up to: 6.7
-Stable tag: 2.2.3
+Stable tag: 2.2.4
 Requires PHP: 7.0
 Author : LWS
 Author URI: https://www.lws.fr/

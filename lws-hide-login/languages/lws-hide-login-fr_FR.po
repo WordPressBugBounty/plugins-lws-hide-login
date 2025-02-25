@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.3.2\n"
+"X-Generator: Poedit 3.2.2\n"
 
 #: lws-hide-login.php:
 msgid "Rate"
@@ -320,7 +320,10 @@ msgid "It provide a way to purge all your cache but will only work on server usi
 msgstr "Cela vous permet de purger tout votre cache mais cela ne fonctionne que si votre serveur utilise aussi ce système de cache."
 
 msgid "Cannot set login to reserved URLs or the redirection page."
-msgstr "Impossible de mettre à jour l'adresse de connexion vers une URL réservée ou la page de redirection"
+msgstr "Impossible de mettre à jour l'adresse de connexion vers une URL réservée ou la page de redirection."
 
 msgid "Cannot set redirection to reserved URLs or the new login page."
-msgstr "Impossible de mettre à jour l'adresse de redirection vers une URL réservée ou la page de connexion"
+msgstr "Impossible de mettre à jour l'adresse de redirection vers une URL réservée ou la page de connexion."
+
+msgid "Boost your website using LWS Optimize, with file-based cache, file minification, lazy-loading and more"
+msgstr "Boostez votre site web avec LWS Optimize, avec mise en cache des fichiers, minification, chargement différé et plus encore"
