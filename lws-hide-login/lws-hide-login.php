@@ -8,7 +8,7 @@
  * Requires PHP:      7.0
  * Author:            LWS
  * Author URI:        https://www.lws.fr
- * Tested up to:      6.7
+ * Tested up to:      6.8
  * Domain Path:       /languages
  *
  * @since             1.0
