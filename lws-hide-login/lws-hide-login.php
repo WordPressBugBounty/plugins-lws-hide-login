@@ -4,11 +4,11 @@
  * Plugin Name:       LWS Hide Login
  * Plugin URI:        https://www.lws.fr/
  * Description:       Secure your access to the admin page with this plugin !
- * Version:           2.2.4
+ * Version:           2.2.5
  * Requires PHP:      7.0
  * Author:            LWS
  * Author URI:        https://www.lws.fr
- * Tested up to:      6.8
+ * Tested up to:      6.9
  * Domain Path:       /languages
  *
  * @since             1.0
@@ -175,7 +175,7 @@ function lwshl_review_ad_plugin(){
         </div>
         <div style="padding:16px">
             <h1 class="lwshl_review_block_title"> <?php esc_html_e('Thank you for using LWS Hide Login!', 'lws-hide-login'); ?></h1>
-            <p class="lwshl_review_block_desc"><?php _e('Evaluate our plugin to help others hide their dashboard and login page on their WordPress website', 'lws-hide-login' ); ?></p>
+            <p class="lwshl_review_block_desc"><?php esc_html_e('Evaluate our plugin to help others hide their dashboard and login page on their WordPress website', 'lws-hide-login' ); ?></p>
             <a class="lwshl_button_rate_plugin" href="https://wordpress.org/support/plugin/lws-hide-login/reviews/" target="_blank" ><img style="margin-right: 8px;" src="<?php echo esc_url(plugins_url('images/noter.svg', __FILE__))?>" width="15px" height="15px"><?php esc_html_e('Rate', 'lws-hide-login'); ?></a>
             <a class="lwshl_review_button_secondary" onclick="lwshl_remind_me()"><?php esc_html_e('Remind me later', 'lws-hide-login'); ?></a>
             <a class="lwshl_review_button_secondary" onclick="lwshl_do_not_bother_me()"><?php esc_html_e('Do not ask again', 'lws-hide-login'); ?></a>
@@ -229,6 +229,7 @@ function lws_hl_create_page()
         } else {
             $redirection = get_option('lws_aff_new_redirection', '');
             if (in_array($change_login, [$redirection, 'wp-admin', 'wp-login', 'wp-login.php', 'login'])) {
+                delete_option('lws_aff_new_login');
                 $form_updated = __('Cannot set login to reserved URLs or the redirection page.', 'lws-hide-login');
             } else {
                 update_option('lws_aff_new_login', $change_login);
@@ -314,6 +315,10 @@ add_action("wp_ajax_lwshidelogin_activatePlugin", "lws_hl_activate_plugin");
 function lws_hl_activate_plugin()
 {
     check_ajax_referer('activate_plugin_nonce_pluginpage', '_ajax_nonce');
+    if (!current_user_can('activate_plugins')) {
+        wp_die(-1, 403);
+    }
+
     $plugin_active_network = is_plugin_active_for_network(plugin_basename(__FILE__));
     if (isset($_POST['ajax_slug'])) {
         if (is_multisite() && $plugin_active_network) {
@@ -431,7 +436,7 @@ function lws_hl_redirect_page()
                 } elseif ($pagenow == 'wp-login.php') {
                     global $user_login, $error;
                     $redirect_admin = admin_url();
-                    $redirect_url = isset($_REQUEST['redirect_to']) ? $_REQUEST['redirect_to'] : "";
+                    $redirect_url = isset($_REQUEST['redirect_to']) ? esc_url_raw(wp_unslash($_REQUEST['redirect_to'])) : '';
 
                     if (is_user_logged_in() && !isset($_REQUEST['action'])) {
                         nocache_headers();
@@ -466,7 +471,7 @@ function lws_hl_redirect_page()
                 } elseif ($pagenow == 'wp-login.php') {
                     global $user_login, $error;
                     $redirect_admin = admin_url();
-                    $redirect_url = isset($_REQUEST['redirect_to']) ? $_REQUEST['redirect_to'] : "";
+                    $redirect_url = isset($_REQUEST['redirect_to']) ? esc_url_raw(wp_unslash($_REQUEST['redirect_to'])) : '';
 
                     if (is_user_logged_in() && !isset($_REQUEST['action'])) {
                         nocache_headers();
